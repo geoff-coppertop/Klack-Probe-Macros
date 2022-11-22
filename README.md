@@ -1,161 +1,224 @@
-# Klicky Probe
-Microswitch probe with magnetic attachment, primarily aimed at CoreXY 3d printers.
+# Klipper macros
 
-Initially it was focused on the [Voron printers](https://vorondesign.com/) (V2.4, V1.8, Trident, V0) and derivatives, now it's been restructured to better allow other printers to be documented here.
+These macros are  based on the great Annex magprobe dockable probe macros "#Originally developed by Mental, modified for better use on K-series printers by RyanG and Trails", kudos to them.
+That macro as since evolved into a klipper plugin that currently is pending inclusion in klipper, more information [here](https://github.com/Annex-Engineering/Quickdraw_Probe/tree/main/Klipper_Macros)
 
-The objectives for this project are:
-- drop in replacement for Omron TL-Q5MC2 or PL-08N2 (you don't need to replace the toolhead), replacement of BLtouch probes
-- soldering not required
-- minimal adjustments required
-- be able to detect all the print surfaces
-- be as close to the hotend tip as possible
-- highly repeatable and accurate probes
-- less temperature variations
-- no melting of its parts
-- cheap to build
-- reuse spare parts if possible
+Would alse like to thank the Voron discord community and VoronDesign for all the work, suggestions and support that they have given to improve on the macros.
 
-Most of the Klicky probe users are using klipper, there are some macros in here that ease the probing process, by automating the attach, dock and use of the probe.
+## Updating from an earlier version
 
-Some work has been developed to have the same functionality on RRF.
+While you should read these instructions to the end, as the necessary helper functions are now split on different files and it's better explained below, as a current user of the klicky macros, it's easier to configure.
 
-It can also be used with the [automatic Z calibration](https://github.com/protoloft/klipper_z_calibration) klipper plugin to effectively calculate the Z offset from the probe and from the Z endstop if your printers supports a Z endstop triggered by the nozzle (like most Voron's do)
+The first macro on the old klicky-probe.cfg contained all the necessary variables, you should the values you changed one by one to the new klicky-variables.cfg, the most important are these ones:
 
-The inspiration for the Klicky Probe comes from the [Quickdraw](https://github.com/Annex-Engineering/Quickdraw_Probe) and the [Euclid probe](https://github.com/nionio6915/Euclid_Probe), it uses some concepts from each of the projects.
+```ini
+# if you do not have any of these variables, read the explanation on klicky-variables.cfg and the setup of the macros on your respective printer, this is a quick start quide
+variable_enable_z_hop           # set this to false for beds that fall significantly under gravity (almost to Z max)
+variable_max_bed_y              # bed max y size
+variable_max_bed_x              # bed max x size
 
-Updated instructions provided by StefanRaatz.
-oc_geek and TurBoxxs were also a great help in refining and testing the CAD files.
-Garrettwp provided the initial revised macro files.
-User richardjm revised the macro variables and added some functions.
-Mental created the initial macro and one of the first magnetically attached microswitch probes.
+variable_z_endstop_x            # copy this value over your old file
+variable_z_endstop_y            # copy this value over your old file
 
-Without them, and some others this effort would not be in the current state, many thanks to them all.
+variable_docklocation_[x,y,z]   # copy this value over your old file
+Variable_dockmove_[x,y,z]       # use 40,0,0 it's the old default
+Variable_attachmove_[x,y,z]     # use 0,30,0 it's the old default
+```
 
-It is working very well, if you decide to use it, give me feedback, either here, or on discord, my discord user is JosAr#0517.
+Now if you use auto-z calibration, you also should copy z-calibration.cfg to klicky-z-calibration.cfg and remove the z-calibration.cfg include in printer.cfg.
 
-If you want to donate something regarding this project, use this [link](https://paypal.me/Josar154) or [__Buy me some ABS!__](https://www.buymeacoffee.com/JosAr), thanks
 
-# Upgrading from an earlier version
 
-If you are upgrading from an earlier version, check the [klipper macros](./Klipper_macros) folder, it contains update instructions.
+## New installation
 
-# Probe options
+The macros are currently separated by function, there is klicky-probe.cfg that should include the remaining files, this both keeps klipper's printer.cfg cleaner and allow for backward compatibility.
 
-Right now, there are two probe attachment options, each with two probe types.
+The remaining files are the klicky-macros.cfg that stores all the general macros (like the dock and attach macros, this file is required on all the printers), the klicky-variables.cfg where it's necessary to configure the dock location and do other printer specific configurations and the klipper helper files for specific functions.
 
-## Regular Klicky
+The helper files work by expanding the standard klipper function with a attach and dock command, so that you can use all the klipper commands without the need to manually attach and dock the printer.
 
-First klicky probe, based on the [Quickdraw probe](https://github.com/Annex-Engineering/Quickdraw_Probe), with an added third magnet for added stability and fixed dock gantry setups.
+Right now the macros are divided in multiple files, that way it is much easier to upgrade, configure and maintain
 
-<img src="./Probes/KlickyProbe/Photos/KlickyProbe.png" alt="klickyprobe" style="zoom:50%;" />
+| File                             |        v2.4        |        v1.8        |       Legacy       |      Trident       | Switchwire         |         v0         |       Tiny-M       |      V-core3       | MercuryOne         |
+| -------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | ------------------ | :----------------: | :----------------: | :----------------: | ------------------ |
+| klicky-probe.cfg                 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| klick-variables.cfg              | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| klicky-bed-mesh-calibrate.cfg    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Klicky-quad-gantry-level.cfg     | :heavy_check_mark: |        :x:         |        :x:         |        :x:         | :x:                |        :x:         |        :x:         |        :x:         | :x:                |
+| Klicky-screws-tilt-calculate.cfg |        :x:         | :heavy_check_mark: | :heavy_check_mark: |        :x:         | :x:                | :heavy_check_mark: | :heavy_check_mark: |        :x:         | :grey_question:    |
+| klicky-z-tilt-adjust.cfg         |        :x:         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |        :x:         |        :x:         | :heavy_check_mark: | :heavy_check_mark: |
 
-It uses magnets to secure the probe to the mount and also to make the electrical connection.
-The magnets can be glued to prevent them from coming loose.
-It supports a [microswitch probe](./Probes/KlickyProbe/) and [Unklicky](./Probes/Unklicky/) ([invented by DustinSpeed](https://github.com/majarspeed/Unklicky)) (self built probe, that so far surpasses the microswitches in common use) based probing.
 
-### [Assembly instruction](./Probes/KlickyProbe/)
 
-## KlickyNG
+* klicky-probe.cfg (includes all the necessary files in klipper)
+* klick-variables.cfg, stores all the Klicky variables, printer specific, should not be necessary to update very often
+* klicky-bed-mesh-calibrate.cfg, bed mesh helper scripts, assumes bed mesh is already configured, includes a commented example, further help on setup [here](https://www.klipper3d.org/Bed_Mesh.html#bed-mesh)
+* Klicky-quad-gantry-level.cfg, Quad Gantry Level helper script, allows on machines with four Z independent motors to level the bed automatically, assumes QGL is already configured (it's used on a V2.4 to level the gantry relative to the bed), further help [here](https://www.klipper3d.org/Config_Reference.html?h=quad#quad_gantry_level)
+* Klicky-screws-tilt-calculate.cfg, screws tilt adjust helper script, knowing where the bed screws are, it will assist in leveling the bed by calculating on the number of times each screw should be rotated, assumes that the configuration is already defined, further help on setup [here](https://www.klipper3d.org/Manual_Level.html#adjusting-bed-leveling-screws-using-the-bed-probe)
+* klicky-z-tilt-adjust.cfg, Z tilt adjust helper script, allows on machines with two or three Z independent motors to level the bed automatically, assumes that the configuration is already defined, further help on setup [here](https://www.klipper3d.org/Config_Reference.html?h=z_tilt#z_tilt)
+* klicky-specific.cfg, place to put other configurations specific to your printer, like probe or bed mesh klipper configuration
 
-New enclosed magnets probe, it does not require glue to help prevent the magnets from coming loose, magnets are also self aligning.
-This approach only uses common and easy to source parts.
+Some printers, like the Voron v0 or Tiny-M don't have the probe as a standard configuration, so in those printers documentation there are extra klipper configurations that you need to use in order to configure the actual probe.
 
-<img src="./Probes/KlickyNG/Photos/klickyNG.png" alt="klickyprobe" style="zoom:50%;" />
+## printer.cfg configuration
 
-Also supports [microswitch probe](./Probes/KlickyNG/) and [Unklicky](./Probes/UnklickyNG/) ([invented by DustinSpeed](https://github.com/majarspeed/Unklicky)) (self built probe, that so far surpasses the microswitches in common use) based probing.
+Download the appropriate files (or the zip containing them all and delete the ones that are not relevant) and upload it to your klipper Config folder.
 
-### [Assembly instruction](./Probes/KlickyNG/)
+```bash
+cd ~/klipper_config/
+wget https://raw.githubusercontent.com/jlas1/Klicky-Probe/main/Klipper_macros/Klipper_macros.zip
+unzip Klipper_macros.zip
+```
 
-# Printers With detailed instructions and specific parts (by support order)
+Check the klicky-probe.cfg, remove or comment the macros that are not required for your printer or that you do not want to implement.
+Edit klicky-variables.cfg (there are printers specific recommendations on the printer configuration page) for klicky to operate properly.
 
-The specific parts with install, configuration, troubleshoot and recommended settings can be found on each printer page, linked below.
+There are some configurations that need to be checked, otherwise your will run into **out of range** problems, that is by design.
 
-[Voron v2.4](./Printers/Voron/v1.8_v2.4_Legacy_Trident)
+Open your printer.cfg file, comment out *safe_z_home* or *homing_override*, if you have them (the macros will take care of homing) and add the following line before the "Macros" Section.
 
-[Voron v1.8](./Printers/Voron/v1.8_v2.4_Legacy_Trident)
+`[include klicky-probe.cfg]`
 
-[Voron Legacy](./Printers/Voron/v1.8_v2.4_Legacy_Trident)
+It should look like this:
 
-[Voron Trident](./Printers/Voron/v1.8_v2.4_Legacy_Trident)
+```ini
+#####################################################################
+# 	Macros
+#####################################################################
+[include klicky-probe.cfg]
+```
 
-[Voron v0](./Printers/Voron/v0)
+You now need to configure the probe pin, that is printer specific, and the details are on your printer configuration guide.
 
-[VCore 3.0/3.1 ](./Printers/Ratrig/VCore3.0_3.1)
+Regarding you print start and end macros, with the helper scripts implemented, they do not need to be changed.
 
-[MercuryOne](./Printers/ZeroG/Mercury_One)
+If however you would like to reduce the times that the toolhead attaches and docks the probe, you can use Attach_Probe_Lock that prevents the probe to be docked after an operation that normally would dock the probe.
 
-[Voron Switchwire](./Printers/Voron/Switchwire)
+**BEWARE that the probe may hit the bed depending on what you are doing**.
 
+When you don't need the probe attached anymore, run Dock_Probe_Unlock to dock and unlock the probe.
 
-There are also [docks and mounts submitted by users](./Usermods) to support other printers and toolheads, you should check it out.
+## Pre and Post macros for dock operations
+
+If your setup requires a custom move, a macro to be called before attaching and docking, there are two macros **\_DeployDock** and **\_RetractDock** that are executed (if they are configured) when it's required for the dock to be ready for docking and attachment operations.
 
-![Klicky Probe image](./Photos/Klicky_Probe.png)klicky early version.
+Currently, thanks to Kyleisah there is also support to use a simple servo setup, when a certain angle deploys the dock and another retracts it, you can find the following variables on klicky-variables.cfg.
 
-# Klicky components
-
-All the compatible printers require:
-
-* Toolhead mount (the thing that the probe attached to when it's being used)
-* Klicky probe (there are three versions, all are interchangeable and compatible, more information on the specific printer page), what actually is used to probe the bed
-* Probe dock (all the printers use the same)
-* Probe dock mount (what attaches to the printer to dock the probe when not in use)
-
-The CAD with all the files is located [Here](./CAD)
-
-KlickyProbe STL's are now located on each probe type directory.
-
-Printer specific STL are in each printer directory.
-
-The klipper macros are [here](./Klipper_macros), the RRF [here](./RRF_macros).
-
-
-## Probe accuracy
-
-The probe accuracy output is better than a range of 0.025mm (difference between highest and lowest), and a standard deviation of 0.01mm.
-
-
-
-## Print Settings
-
-There are no need for supports, recommended settings are 4 perimeters/top/bottom, at least 23% infill, the STL's are already oriented, you only need to send them to the slicer.
-
-![](./Photos/Klicky_Probe_recommended_printing_orientation.png)
-
-Each printer family/version has it's own mounting options, Bill of Materials, assembly instructions and dock/attach setup.
-
-# General Bill of Materials (BOM)
-
-Tools:
-
-- 1.5mm Drill (optional)
-- Multimeter to check for Continuity 
-- Super Glue
-- Soldering Iron for the heat inserts
-
-Probe BOM:
-
-- 1x microswitch (the omron D2F-5 or D2F-5L (removing the lever) is recommended), D2F-1 and similar sizes microswitch also work
-- 2x M2x10 mm self tapping
-- some 6 mm x 3 mm magnets (it ranges from 8 to 10)
-- some m5 screws
-- some m3 screws
-- some m3 heat inserts
-- some m3 nuts
-
-# Sourcing guide
-
-To get the best experience, please consider purchasing from the trusted list of suppliers bellow.
-
-[trusted suppliers list](./Sourcing.md)
-
-# Assembled Klicky Probe on a Voron v2.4
-
-# ![Assembled Klicky Probe](./Photos/Voron_V2.4_300mm_back.jpg)
-
-# Dock and undock video
-
-https://user-images.githubusercontent.com/16675722/122302371-eb9c4e00-cef9-11eb-91d3-3aded131bae0.mp4
-
-It is working very well, if you decide to use it, give me feedback, either here, or on Voron discord, my discord user is JosAr#0517.
-
-By standing on the shoulders of giants, lets see if we can see further.
+```ini
+#The following variables are used if the dock is deployed and retracted via a servo motor
+variable_enable_dock_servo:  False    # Set to true if your klicky dock is servo-controlled
+variable_servo_name:        'NAME'    # The name of the dock servo defined in printer.cfg under [servo]
+variable_servo_deploy:          10    # This EXAMPLE is the value used to deploy the servo fully
+variable_servo_retract:         11    # This EXAMPLE is the value used to retract the servo fully (initial_angle in [servo] config)
+variable_servo_delay:         1000    # This is a delay to wait the servo to reach the requested position, be carefull with high values
+```
+
+On printer.cfg to add servo support, you need to add the following:
+
+```ini
+[servo klicky_servo]
+pin: PC12
+#   PWM output pin controlling the servo. This parameter must be
+#   provided.
+maximum_servo_angle: 180
+#   The maximum angle (in degrees) that this servo can be set to. The
+#   default is 180 degrees.
+minimum_pulse_width: 0.00025
+#   The minimum pulse width time (in seconds). This should correspond
+#   with an angle of 0 degrees. The default is 0.001 seconds.
+maximum_pulse_width: 0.0024
+#   The maximum pulse width time (in seconds). This should correspond
+#   with an angle of maximum_servo_angle. The default is 0.002
+#   seconds.
+```
+
+To increase the servo strength, you should connect the servo 5v to a PSU instead of to the MCU.
+
+## Status leds
+
+Thanks to foonietunes we now have status leds support (specially useful for SB leds).
+
+[You can read how to implement it here](https://github.com/VoronDesign/Voron-Afterburner/tree/sb-beta/Klipper_Macros).
+
+## XY Sensorless homing
+
+If you are using sensorless homing, and have your own X and/or Y homing macros, you can use override the klicky macros behavior with your very own _HOME_X and _HOME_Y macros.
+
+If they exist on your klipper configuration, klicky macro will use them instead of the default G28 commands.
+
+## Euclid support
+
+To support euclid side dock and undock, try these values
+
+```python
+#Attach move. final toolhead movement to attach the probe on the mount
+#it's a relative move
+Variable_attachmove_x:          -70
+Variable_attachmove_y:            0
+Variable_attachmove_z:            0
+
+#Attach move2
+Variable_attachmove2_x:          0
+Variable_attachmove2_y:         40
+Variable_attachmove2_z:          0
+
+#Dock move, final toolhead movement to release the probe on the dock
+#it's a relative move
+Variable_dockmove_x:              0
+Variable_dockmove_y:            -40
+Variable_dockmove_z:              0
+```
+
+**you need to check what is the Z height of the Euclid Dock to possibly update the z moves above**
+
+## Advanced users
+
+**Beware going forward, you will leave the safety that the macros provide**
+
+I recognize that some users are very technical and may want to write custom macros, so here are the only commands that you need to  attach and dock the probe, without any fail safes or checks.
+
+### Probe attach commands
+
+```python
+# Probe entry location
+G0 X{docklocation_x|int - attachmove_x|int - attachmove2_x|int} Y{docklocation_y|int - attachmove_y|int - attachmove2_y} F{travel_feedrate}
+# Attach probe
+G0 X{docklocation_x|int - attachmove2_x|int} Y{docklocation_y|int - attachmove2_y} F{travel_feedrate}
+G0 X{docklocation_x} Y{docklocation_y} F{dock_feedrate}
+# Probe exit location
+G0 X{docklocation_x|int - attachmove_x|int} Y{docklocation_y|int - attachmove_y|int} F{release_feedrate}
+```
+
+### Probe dock commands
+
+```python
+# Probe entry location
+G0 X{docklocation_x|int - attachmove_x|int} Y{docklocation_y|int - attachmove_y|int} F{travel_feedrate}
+# Drop Probe to Probe location
+G0 X{docklocation_x} Y{docklocation_y} F{dock_feedrate}
+# Probe decoupling
+G0 X{docklocation_x|int + dockmove_x|int} Y{docklocation_y|int + dockmove_y|int} F{release_feedrate}
+G0 X{docklocation_x|int + dockmove_x|int - attachmove_x|int} Y{docklocation_y|int + dockmove_y|int - attachmove_y|int} F{release_feedrate}
+```
+
+The typical variables values are:
+
+```ini
+variable_travel_speed:          100    # how fast all other travel moves will be performed when running these macros
+variable_dock_speed:             50    # how fast should the toolhead move when docking the probe for the final movement
+variable_release_speed:          75    # how fast should the toolhead move to release the hold of the magnets after docking
+#Dock move (if the dock is mounted on the back extrusion, these values can be left untouched)
+Variable_dockmove_x:              0    # Final toolhead movement to release
+Variable_dockmove_y:             40    # the probe on the dock
+Variable_dockmove_z:              0    # (can be negative)
+#Attach move (if the dock is mounted on the back extrusion, these values can be left untouched)
+Variable_attachmove_x:           30    # Final toolhead movement to Dock
+Variable_attachmove_y:            0    # the probe on the dock
+Variable_attachmove_z:            0    # (can be negative)
+
+Variable_attachmove2_x:           0    # intermediate toolhead movement to attach
+Variable_attachmove2_y:           0    # the probe on the dock (can be negative)
+Variable_attachmove2_z:           0    # (to be used as a last move before attaching the probe, suitable for Euclid)
+```
+
+**Again, be advised that these will not raize the bed to avoid hitting it, won't check if the probe is docked or attached. USE EXTREME CAUTION**
