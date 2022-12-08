@@ -11,11 +11,11 @@ The remaining files are the klack-macros.cfg that stores all the general macros 
 
 The helper files work by expanding the standard klipper function with a attach and dock command, so that you can use all the klipper commands without the need to manually attach and dock the printer.
 
-* klack-probe.cfg (includes all the necessary files in klipper)
-* klack-variables.cfg, stores all the Klicky variables, printer specific, should not be necessary to update very often
-* klack-bed-mesh-calibrate.cfg, bed mesh helper scripts, assumes bed mesh is already configured, includes a commented example, further help on setup [here](https://www.klipper3d.org/Bed_Mesh.html#bed-mesh)
-* klack-adaptive-bed-mesh-calibrate.cfg, adaptive bed mesh helper scripts, is an alternative of the provious cfg file that include the great adaptive bed mesh macro. More information about adaptive bed mesh [here](https://gist.github.com/ChipCE/95fdbd3c2f3a064397f9610f915f7d02)
-* klack-screws-tilt-calculate.cfg, screws tilt adjust helper script, knowing where the bed screws are, it will assist in leveling the bed by calculating on the number of times each screw should be rotated, assumes that the configuration is already defined, further help on setup [here](https://www.klipper3d.org/Manual_Level.html#adjusting-bed-leveling-screws-using-the-bed-probe)
+* `klack-probe.cfg` (includes all the necessary files in klipper)
+* `klack-variables.cfg`, stores all the Klicky variables, printer specific, should not be necessary to update very often
+* `klack-bed-mesh-calibrate.cfg`, bed mesh helper scripts, assumes bed mesh is already configured, includes a commented example, further help on setup [here](https://www.klipper3d.org/Bed_Mesh.html#bed-mesh)
+* `klack-adaptive-bed-mesh-calibrate.cfg`, adaptive bed mesh helper scripts, is an alternative of the provious cfg file that include the great adaptive bed mesh macro. More information about adaptive bed mesh [here](https://gist.github.com/ChipCE/95fdbd3c2f3a064397f9610f915f7d02)
+* `klack-screws-tilt-calculate.cfg`, screws tilt adjust helper script, knowing where the bed screws are, it will assist in leveling the bed by calculating on the number of times each screw should be rotated, assumes that the configuration is already defined, further help on setup [here](https://www.klipper3d.org/Manual_Level.html#adjusting-bed-leveling-screws-using-the-bed-probe)
 
 You can enable the functions that you would like to use in the `klack-probe.cfg`.
 
