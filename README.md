@@ -30,22 +30,22 @@ The cleanest and easiest way to get started with Klack Probe Macros is to use Mo
 
    ln -s ~/Klack-Probe-Macros printer_data/config/Klack
 
-   cp ~/Klack-Probe-Macros/klack-settings.cfg ~/printer_data/config/klack-settings.cfg
+   cp ~/Klack-Probe-Macros/klack-settings.cfg ~/printer_data/config/klack_settings.cfg
    ```
 
    **Note:**
-   This will change to the home directory, clone the Klack Probe Macros repo, create a symbolic link of the repo to your printer's config folder, and create a copy of `klack-settings.cfg` in your config directory, ready to edit.
+   This will change to the home directory, clone the Klack Probe Macros repo, create a symbolic link of the repo to your printer's config folder, and create a copy of `klack_settings.cfg` in your config directory, ready to edit.
 
-   It is also possible that with older setups of klipper or moonraker that your config path will be different. Be sure to use the correct config path for your machine when making the symbolic link, and when copying `klack-settings.cfg` to your config directory.
+   It is also possible that with older setups of klipper or moonraker that your config path will be different. Be sure to use the correct config path for your machine when making the symbolic link, and when copying `klack_settings.cfg` to your config directory.
 
 2. Open your `moonraker.conf` file and add this configuration:
 
    ```yaml
-   [update_manager Klack_Probe_Macros]
+   [update_manager Klack-Probe-Macros]
    type: git_repo
    channel: dev
    path: ~/Klack-Probe-Macros
-   origin: https://github.com/kyleisah/geoff-coppertop/Klack-Probe-Macros.git
+   origin: https://github.com/geoff-coppertop/Klack-Probe-Macros.git
    managed_services: klipper
    primary_branch: main
    ```
