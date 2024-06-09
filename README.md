@@ -40,7 +40,7 @@ The cleanest and easiest way to get started with Klack Probe Macros is to use Mo
 
 2. Open your `moonraker.conf` file and add this configuration:
 
-   ```yaml
+   ```ini
    [update_manager Klack-Probe-Macros]
    type: git_repo
    channel: dev
@@ -49,6 +49,12 @@ The cleanest and easiest way to get started with Klack Probe Macros is to use Mo
    managed_services: klipper
    primary_branch: main
    ```
+
+   or
+   ```ini
+   [include ~/printer_data/config/Klack-Probe-Macros/moonraker.conf]
+   ```
+
 
    **Note:**
    Whenever Moonraker configurations are changed, it must be restarted for changes to take effect. If you do not want moonraker to notify you of future updates to KAMP, feel free to skip this.
